@@ -1,5 +1,7 @@
 # Task Tracker API
 
+[![CI](https://github.com/syedalz/task-tracker/actions/workflows/build-deploy.yml/badge.svg)](https://github.com/syedalz/task-tracker/actions/workflows/build-deploy.yml)
+
 A REST API for managing tasks, built with **FastAPI** and **PostgreSQL**, containerized with **Docker** and **Docker Compose**, and covered by an automated **pytest** suite.
 
 This project is the foundation of a DevOps portfolio pipeline: the application is intentionally simple so the focus can be on how it is built, tested, packaged, and deployed.
@@ -144,7 +146,7 @@ Each test starts with freshly created tables, so tests are independent of each o
 - [x] REST API with PostgreSQL
 - [x] Automated tests with pytest
 - [x] Docker image and Docker Compose setup
-- [ ] CI pipeline with GitHub Actions (run tests, build image)
+- [x] CI pipeline with GitHub Actions (run tests, build image)
 - [ ] AWS infrastructure with Terraform
 - [ ] Kubernetes deployment and monitoring
 - [ ] Database migrations with Alembic
