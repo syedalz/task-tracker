@@ -43,3 +43,25 @@ jobs:
           PGPASSWORD: ${{ secrets.DATABASE_PASSWORD }}
       - name: Run pytests
         run: pytest
+
+  build:
+    needs: test
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7
+        with:
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/task-tracker:latest
+            ${{ secrets.DOCKER_HUB_USERNAME }}/task-tracker:${{ github.sha }}
