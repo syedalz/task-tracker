@@ -82,3 +82,30 @@ resource "aws_vpc_security_group_egress_rule" "all_outbound" {
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1"
 }
+
+
+resource "aws_key_pair" "auth" {
+
+  key_name   = "task-tracker-dev-key"
+  public_key = file("~/.ssh/task-tracker-key.pub")
+}
+
+resource "aws_instance" "app" {
+
+  instance_type          = "t3.micro"
+  ami                    = data.aws_ami.ubuntu.id
+  key_name               = aws_key_pair.auth.key_name
+  vpc_security_group_ids = [aws_security_group.app_sg.id]
+  subnet_id              = aws_subnet.public_a.id
+  user_data              = file("userdata.sh")
+
+  root_block_device {
+    volume_size = 10
+  }
+
+  tags = {
+    Name = "task-tracker-dev-app"
+  }
+
+
+}
