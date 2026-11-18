@@ -97,7 +97,7 @@ resource "aws_instance" "app" {
   key_name               = aws_key_pair.auth.key_name
   vpc_security_group_ids = [aws_security_group.app_sg.id]
   subnet_id              = aws_subnet.public_a.id
-  user_data              = file("userdata.sh")
+  user_data              = templatefile("userdata.tpl", { image = var.image, db_password = var.db_password })
 
   root_block_device {
     volume_size = 10
