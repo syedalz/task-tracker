@@ -18,7 +18,7 @@ resource "aws_iam_role" "github_deploy" {
       Condition = {
         StringEquals = {
           "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
-          "token.actions.githubusercontent.com:sub" = "repo:syedalz/task-tracker:ref:refs/heads/main"
+          "token.actions.githubusercontent.com:sub" = "repo:syedalz@195389451/task-tracker@1423978832:ref:refs/heads/main"
         }
       }
     }]
