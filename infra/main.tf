@@ -98,6 +98,7 @@ resource "aws_instance" "app" {
   vpc_security_group_ids = [aws_security_group.app_sg.id]
   subnet_id              = aws_subnet.public_a.id
   user_data              = templatefile("userdata.tpl", { image = var.image, db_password = var.db_password })
+  iam_instance_profile   = aws_iam_instance_profile.ssm.name
 
   root_block_device {
     volume_size = 10
@@ -106,6 +107,34 @@ resource "aws_instance" "app" {
   tags = {
     Name = "task-tracker-dev-app"
   }
+}
 
+# Creating badge and who may use it (trust policy)
+resource "aws_iam_role" "ssm" {
+
+  name = "task-tracker-dev-ec2-ssm-role"
+
+  assume_role_policy = jsonencode({
+
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Principal = { Service = "ec2.amazonaws.com" }
+      Action    = "sts:AssumeRole"
+    }]
+  })
+}
+
+# Attach AWS's ready-made Systems Manager permissions to that badge
+resource "aws_iam_role_policy_attachment" "ssm_core" {
+  role       = aws_iam_role.ssm.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+
+}
+
+resource "aws_iam_instance_profile" "ssm" {
+
+  name = "task-tracker-dev-ec2-profile"
+  role = aws_iam_role.ssm.name
 
 }
