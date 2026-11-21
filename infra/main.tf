@@ -138,3 +138,4 @@ resource "aws_iam_instance_profile" "ssm" {
   role = aws_iam_role.ssm.name
 
 }
+
