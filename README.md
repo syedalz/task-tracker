@@ -176,10 +176,11 @@ Each test starts with freshly created tables, so tests are independent of each o
 
 ## CI/CD Pipeline
 
-The GitHub Actions workflow runs on every push and pull request, with two jobs:
+The GitHub Actions workflow runs on every push and pull request, with three jobs:
 
-1. **`test`:** starts a PostgreSQL 17 **service container**, creates the test database, installs dependencies, and runs the full pytest suite. Database settings come from environment variables, with the password stored as a GitHub secret.
-2. **`build`:** runs only if `test` passes. It builds the Docker image and, on pushes to `main`, publishes it to Docker Hub with two tags: `latest`, and the **commit SHA**, so every published image can be traced back to the exact commit it came from. Pull requests build the image without publishing it.
+1. **`secret-scan`:** scans the commits for leaked credentials with **gitleaks**, running in parallel with the tests.
+2. **`test`:** starts a PostgreSQL 17 **service container**, creates the test database, installs dependencies, and runs the full pytest suite. Database settings come from environment variables, with the password stored as a GitHub secret.
+3. **`build`:** runs only if **both** `secret-scan` and `test` pass. It builds the Docker image and, on pushes to `main`, publishes it to Docker Hub with two tags: `latest`, and the **commit SHA**, so every published image can be traced back to the exact commit it came from. Pull requests build the image without publishing it.
 
 Required repository secrets: `DATABASE_PASSWORD`, `DOCKER_HUB_USERNAME`, and `DOCKER_HUB_ACCESS_TOKEN` (a Docker Hub access token, not the account password).
 
@@ -276,7 +277,7 @@ terraform destroy
 - [x] Docker image and Docker Compose setup
 - [x] CI pipeline with GitHub Actions (run tests, build and publish image)
 - [x] AWS infrastructure with Terraform (VPC, security group, EC2)
-- [ ] Secret scanning in the CI pipeline (e.g. gitleaks)
+- [x] Secret scanning in the CI pipeline (e.g. gitleaks)
 - [ ] Continuous deployment: deploy automatically after a successful pipeline run
 - [ ] Remote Terraform state in S3 with locking
 - [ ] Secrets in AWS Systems Manager Parameter Store instead of user data
