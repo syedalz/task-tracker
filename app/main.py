@@ -19,4 +19,4 @@ app.include_router(task.router  )
 
 @app.get("/")
 def root():
-    return {"message": "Welcome to Task Manager!"}
+    return {"message": "Welcome to Task Manager! You view, add, or delete tasks."}
